@@ -1,9 +1,6 @@
 import type { Metadata } from "next"
 import "./globals.css"
 
-// Initialize admin configuration validation
-import "@/lib/admin/init"
-
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.talk-to-my-lawyer.com'
 
 export const metadata: Metadata = {
