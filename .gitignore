@@ -49,3 +49,4 @@ claude_code_zai_env.sh
 *.log
 *.bak
 *.tmp
+.env.production
