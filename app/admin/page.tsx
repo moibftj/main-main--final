@@ -27,9 +27,9 @@ export default async function AdminDashboard() {
   ] = await Promise.all([
     supabase.from("letters").select("*", { count: "exact", head: true }),
     supabase.from("letters").select("*", { count: "exact", head: true }).in("status", ["pending_review", "under_review"]),
-    supabase.from("profiles").select("*", { count: "exact, head: true }),
-    supabase.from("profiles").select("*", { count: "exact, head: true }).eq("role", "subscriber"),
-    supabase.from("subscriptions").select("*", { count: "exact, head: true }).eq("status", "active")
+    supabase.from("profiles").select("*", { count: "exact", head: true }),
+    supabase.from("profiles").select("*", { count: "exact", head: true }).eq("role", "subscriber"),
+    supabase.from("subscriptions").select("*", { count: "exact", head: true }).eq("status", "active")
   ])
 
   // Get letter status breakdown
