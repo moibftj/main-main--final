@@ -1,19 +1,10 @@
 import { createClient } from "@/lib/supabase/server"
-import { notFound, redirect } from "next/navigation"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { notFound } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from "@/components/ui/select"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   ArrowLeft,
   CheckCircle,
@@ -27,58 +18,41 @@ import {
   FileText
 } from "lucide-react"
 import Link from "next/link"
-import ReviewLetterActions from "@/components/admin/review-letter-actions"
+import { LetterReviewInterface } from "@/components/admin/letter-review-interface"
 
 interface LetterPageProps {
   params: { id: string }
   searchParams: { action?: string }
 }
 
-export default async function LetterPage({ params, searchParams }: LetterPageProps) {
+export default async function LetterReviewPage({ params }: { params: { id: string } }) {
   const supabase = await createClient()
-  const { id } = params
-  const action = searchParams.action || "view"
 
   // Fetch letter with user details
   const { data: letter, error } = await supabase
     .from("letters")
     .select(`
       *,
-      profiles!inner(
-        id,
+      profiles!letters_user_id_fkey (
         email,
         full_name,
         phone,
-        role
+        company_name
       )
     `)
-    .eq("id", id)
+    .eq("id", params.id)
     .single()
 
   if (error || !letter) {
     notFound()
   }
 
-  // Fetch audit trail
+  // Fetch audit trail for this letter
   const { data: auditTrail } = await supabase
     .from("letter_audit_trail")
     .select("*")
-    .eq("letter_id", id)
-    .order("created_at", { ascending: false })
-
-  const getStatusBadge = (status: string) => {
-    const statusConfig = {
-      draft: { variant: "secondary" as const, label: "Draft" },
-      generating: { variant: "secondary" as const, label: "Generating" },
-      pending_review: { variant: "default" as const, label: "Pending Review" },
-      under_review: { variant: "secondary" as const, label: "Under Review" },
-      approved: { variant: "default" as const, label: "Approved" },
-      completed: { variant: "default" as const, label: "Completed" },
-      rejected: { variant: "destructive" as const, label: "Rejected" }
-    }
-    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.draft
-    return <Badge variant={config.variant}>{config.label}</Badge>
-  }
+    .eq("letter_id", params.id)
+    .order("created_at", { ascending: true })
 
   return (
     <div className="space-y-6">
@@ -92,100 +66,34 @@ export default async function LetterPage({ params, searchParams }: LetterPagePro
             </Button>
           </Link>
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">{letter.title}</h2>
+            <h1 className="text-2xl font-bold text-gray-900">{letter.title}</h1>
             <div className="flex items-center space-x-2 mt-1">
-              {getStatusBadge(letter.status)}
+              <Badge variant={
+                letter.status === "completed" ? "default" :
+                letter.status === "approved" ? "default" :
+                letter.status === "rejected" ? "destructive" :
+                letter.status === "pending_review" ? "secondary" :
+                "secondary"
+              }>
+                {letter.status.replace("_", " ").toUpperCase()}
+              </Badge>
               <span className="text-sm text-gray-500">
-                ID: {letter.id.slice(0, 8)}
+                ID: {letter.id.slice(0, 8)}...{letter.id.slice(-8)}
               </span>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Letter Content */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Letter Details */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
-                Letter Details
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>Type</Label>
-                  <p className="font-medium">{letter.letter_type || "General Letter"}</p>
-                </div>
-                <div>
-                  <Label>Created</Label>
-                  <p className="font-medium">
-                    {new Date(letter.created_at).toLocaleString()}
-                  </p>
-                </div>
-              </div>
-
-              {letter.intake_data && (
-                <div>
-                  <Label>Intake Information</Label>
-                  <div className="mt-2 p-4 bg-gray-50 rounded-lg">
-                    <pre className="text-sm text-gray-700 whitespace-pre-wrap">
-                      {JSON.stringify(letter.intake_data, null, 2)}
-                    </pre>
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* AI Generated Content */}
-          {letter.ai_draft_content && (
-            <Card>
-              <CardHeader>
-                <CardTitle>AI Generated Draft</CardTitle>
-                <CardDescription>Content generated by AI for review</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="prose max-w-none">
-                  <div className="bg-gray-50 p-6 rounded-lg">
-                    <pre className="whitespace-pre-wrap text-sm">
-                      {letter.ai_draft_content}
-                    </pre>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Final Content */}
-          {letter.final_content && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Final Approved Content</CardTitle>
-                <CardDescription>Final version after admin review</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="prose max-w-none">
-                  <div className="bg-blue-50 p-6 rounded-lg">
-                    <pre className="whitespace-pre-wrap text-sm">
-                      {letter.final_content}
-                    </pre>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Review Actions */}
-          {(letter.status === "pending_review" || letter.status === "under_review") && (
-            <ReviewLetterActions letter={letter} />
-          )}
+      {/* Letter Information Sidebar */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="lg:col-span-3">
+          <LetterReviewInterface
+            letter={letter}
+            auditTrail={auditTrail || []}
+          />
         </div>
 
-        {/* Sidebar */}
         <div className="space-y-6">
           {/* User Information */}
           <Card>
@@ -204,7 +112,7 @@ export default async function LetterPage({ params, searchParams }: LetterPagePro
               </div>
               <div>
                 <Label>Email</Label>
-                <p className="font-medium">{letter.profiles.email}</p>
+                <p className="font-medium text-sm">{letter.profiles.email}</p>
               </div>
               <div>
                 <Label>Phone</Label>
@@ -213,67 +121,77 @@ export default async function LetterPage({ params, searchParams }: LetterPagePro
                 </p>
               </div>
               <div>
-                <Label>Role</Label>
-                <Badge variant="outline">
-                  {letter.profiles.role}
-                </Badge>
+                <Label>Company</Label>
+                <p className="font-medium">
+                  {letter.profiles.company_name || "Not provided"}
+                </p>
               </div>
-              <Separator />
-              <Link href={`/admin/users/${letter.profiles.id}`}>
-                <Button variant="outline" size="sm" className="w-full">
-                  <Eye className="mr-2 h-4 w-4" />
-                  View User Profile
-                </Button>
-              </Link>
             </CardContent>
           </Card>
 
-          {/* Status History */}
-          {auditTrail && auditTrail.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Status History</CardTitle>
-                <CardDescription>Timeline of letter status changes</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {auditTrail.map((entry) => (
-                    <div key={entry.id} className="flex items-start space-x-3 text-sm">
-                      <div className="flex-shrink-0">
-                        <div className="w-2 h-2 bg-blue-500 rounded-full mt-1.5"></div>
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-medium">{entry.action}</p>
-                        {entry.notes && (
-                          <p className="text-gray-600 mt-1">{entry.notes}</p>
-                        )}
-                        <p className="text-gray-400 text-xs mt-1">
-                          {new Date(entry.created_at).toLocaleString()}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+          {/* Letter Details */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5" />
+                Letter Details
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div>
+                <Label>Type</Label>
+                <p className="font-medium">{letter.letter_type || "General Letter"}</p>
+              </div>
+              <div>
+                <Label>Created</Label>
+                <p className="font-medium text-sm">
+                  {new Date(letter.created_at).toLocaleDateString()}
+                </p>
+              </div>
+              <div>
+                <Label>Last Updated</Label>
+                <p className="font-medium text-sm">
+                  {new Date(letter.updated_at).toLocaleDateString()}
+                </p>
+              </div>
+              {letter.completed_at && (
+                <div>
+                  <Label>Completed</Label>
+                  <p className="font-medium text-sm">
+                    {new Date(letter.completed_at).toLocaleDateString()}
+                  </p>
                 </div>
-              </CardContent>
-            </Card>
-          )}
+              )}
+            </CardContent>
+          </Card>
 
-          {/* Quick Actions */}
-          {letter.status === "completed" && (
+          {/* Review Information */}
+          {(letter.reviewed_by || letter.review_notes) && (
             <Card>
               <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
+                <CardTitle>Review Information</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2">
-                <Button variant="outline" className="w-full">
-                  Download PDF
-                </Button>
-                <Button variant="outline" className="w-full">
-                  Send Email
-                </Button>
-                <Button variant="outline" className="w-full">
-                  View Audit Trail
-                </Button>
+              <CardContent className="space-y-3">
+                {letter.reviewed_at && (
+                  <div>
+                    <Label>Reviewed Date</Label>
+                    <p className="font-medium text-sm">
+                      {new Date(letter.reviewed_at).toLocaleDateString()}
+                    </p>
+                  </div>
+                )}
+                {letter.review_notes && (
+                  <div>
+                    <Label>Review Notes</Label>
+                    <p className="text-sm">{letter.review_notes}</p>
+                  </div>
+                )}
+                {letter.rejection_reason && (
+                  <div>
+                    <Label>Rejection Reason</Label>
+                    <p className="text-sm text-red-600">{letter.rejection_reason}</p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           )}
