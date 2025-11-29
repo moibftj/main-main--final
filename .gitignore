@@ -24,6 +24,13 @@ pnpm-debug.log*
 # Local development
 .DS_Store
 *.pem
+*.local
+*.local.*
+
+# IDE / Editor settings
+.vscode/settings.json
+.idea/
+*.sublime-*
 
 # Vercel
 .vercel
@@ -34,3 +41,11 @@ next-env.d.ts
 
 # Claude Code
 .claude/
+
+# Shell scripts with secrets
+claude_code_zai_env.sh
+
+# Misc
+*.log
+*.bak
+*.tmp
