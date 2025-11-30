@@ -572,7 +572,21 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <motion.div
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.1,
+                    delayChildren: 0.2,
+                  },
+                },
+              }}
+            >
               {[
                 {
                   icon: Home,
@@ -580,6 +594,7 @@ export default function HomePage() {
                   desc: 'Security deposits, lease violations, habitability issues, and more',
                   price: '$299',
                   color: 'blue',
+                  gradient: 'from-blue-500 to-blue-600',
                 },
                 {
                   icon: Briefcase,
@@ -587,6 +602,7 @@ export default function HomePage() {
                   desc: 'Workplace harassment, wrongful termination, wage disputes',
                   price: '$299',
                   color: 'green',
+                  gradient: 'from-emerald-500 to-green-600',
                 },
                 {
                   icon: AlertCircle,
@@ -594,6 +610,7 @@ export default function HomePage() {
                   desc: 'Collect money owed to you from clients, customers, or businesses',
                   price: '$299',
                   color: 'red',
+                  gradient: 'from-rose-500 to-red-600',
                 },
                 {
                   icon: Users,
@@ -601,6 +618,7 @@ export default function HomePage() {
                   desc: 'Neighbor disputes, contract breaches, personal injury claims',
                   price: '$299',
                   color: 'purple',
+                  gradient: 'from-purple-500 to-purple-600',
                 },
                 {
                   icon: Building,
@@ -608,6 +626,7 @@ export default function HomePage() {
                   desc: 'Property damage, boundary disputes, easement issues',
                   price: '$299',
                   color: 'indigo',
+                  gradient: 'from-indigo-500 to-indigo-600',
                 },
                 {
                   icon: Shield,
@@ -615,39 +634,116 @@ export default function HomePage() {
                   desc: 'Stop harassment, defamation, copyright infringement, and more',
                   price: '$299',
                   color: 'orange',
+                  gradient: 'from-amber-500 to-orange-600',
                 },
               ].map((type, index) => (
-                <Card
+                <motion.div
                   key={type.title}
-                  className={`glass-card card-enhanced laser-border-blue hover:shadow-xl transition-all duration-300 animate-slide-up group scroll-reveal stagger-${
-                    (index % 6) + 1
-                  }`}
+                  variants={{
+                    hidden: { opacity: 0, y: 50, scale: 0.9 },
+                    visible: {
+                      opacity: 1,
+                      y: 0,
+                      scale: 1,
+                      transition: {
+                        type: "spring",
+                        stiffness: 100,
+                        damping: 12,
+                      }
+                    },
+                  }}
+                  whileHover={{
+                    y: -10,
+                    scale: 1.02,
+                    transition: { duration: 0.3 }
+                  }}
                 >
-                  <CardHeader className="relative z-10">
-                    <div
-                      className={`w-12 h-12 rounded-lg bg-${type.color}-100 flex items-center justify-center mb-4 card-icon transition-all duration-300`}
-                    >
-                      <type.icon className={`h-6 w-6 text-${type.color}-600`} />
+                  <Card className={`h-full glass-card card-enhanced hover:shadow-2xl transition-all duration-300 group relative overflow-hidden letter-card-enhanced gpu-accelerated`}>
+                    {/* Animated background gradient */}
+                    <motion.div
+                      className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500"
+                      style={{
+                        background: `linear-gradient(135deg, ${type.gradient.replace('from-', '').replace(' to-', ', ')})`,
+                      }}
+                      animate={{
+                        scale: [1, 1.1, 1],
+                      }}
+                      transition={{
+                        duration: 5,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                    />
+
+                    {/* Shimmer effect on hover */}
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 overflow-hidden rounded-lg">
+                      <motion.div
+                        className="absolute inset-0"
+                        style={{
+                          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
+                          backgroundSize: '200% 100%'
+                        }}
+                        animate={{
+                          backgroundPosition: ['-200% center', '200% center']
+                        }}
+                        transition={{
+                          duration: 1.5,
+                          repeat: Infinity,
+                          ease: "linear"
+                        }}
+                      />
                     </div>
-                    <CardTitle className="text-xl font-semibold mb-2 text-gradient-animated">
-                      {type.title}
-                    </CardTitle>
-                    <CardDescription className="text-gray-600 mb-4">{type.desc}</CardDescription>
-                    <div className="text-2xl font-bold text-blue-600 glow-text animate-bounce-gentle">
-                      Starting at {type.price}
-                    </div>
-                  </CardHeader>
-                  <CardContent className="relative z-10">
-                    <Link href="/auth/signup">
-                      <Button className="w-full btn-netlify btn-enhanced text-white transition-all duration-300 group">
-                        Select This Type
-                        <ChevronRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
-                      </Button>
-                    </Link>
-                  </CardContent>
-                </Card>
+
+                    <CardHeader className="relative z-10">
+                      <motion.div
+                        className={`w-14 h-14 rounded-xl bg-gradient-to-br ${type.gradient} flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-all duration-300`}
+                        whileHover={{
+                          rotate: [0, -5, 5, 0],
+                          scale: 1.1
+                        }}
+                        transition={{
+                          duration: 0.5,
+                          repeat: Infinity,
+                          repeatType: "reverse"
+                        }}
+                      >
+                        <type.icon className="h-7 w-7 text-white" />
+                      </motion.div>
+                      <CardTitle className="text-xl font-semibold mb-2 text-gray-900 group-hover:text-blue-600 transition-colors duration-300">
+                        {type.title}
+                      </CardTitle>
+                      <CardDescription className="text-gray-600 mb-4 leading-relaxed">{type.desc}</CardDescription>
+                      <motion.div
+                        className="text-2xl font-bold text-blue-600"
+                        whileHover={{
+                          scale: 1.05
+                        }}
+                      >
+                        Starting at {type.price}
+                      </motion.div>
+                    </CardHeader>
+                    <CardContent className="relative z-10">
+                      <Link href="/auth/signup">
+                        <Button
+                          variant="running_border"
+                          size="lg"
+                          className="w-full ripple"
+                        >
+                          <motion.span
+                            className="flex items-center justify-center"
+                            whileHover={{ x: 5 }}
+                            transition={{ type: "spring", stiffness: 400 }}
+                          >
+                            Select This Type
+                            <ChevronRight className="h-5 w-5 ml-2" />
+                          </motion.span>
+                        </Button>
+                      </Link>
+                    </CardContent>
+                  </Card>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
         </section>
 
