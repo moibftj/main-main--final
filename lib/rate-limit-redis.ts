@@ -98,10 +98,11 @@ export async function safeApplyRateLimit(
   rateLimiter: Ratelimit | null,
   fallbackLimit: number,
   fallbackWindow: string,
-  identifier?: string
+  identifier?: string,
+  prefixName?: string
 ): Promise<NextResponse | null> {
   const fallbackIdentifier = identifier || getClientIP(request)
-  const fallbackPrefix = rateLimiter?.prefix || 'fallback'
+  const fallbackPrefix = prefixName || 'fallback'
 
   if (!rateLimiter) {
     return applyFallbackRateLimit(fallbackPrefix, fallbackIdentifier, fallbackLimit, fallbackWindow)
