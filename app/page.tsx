@@ -45,6 +45,20 @@ import PricingSection from '@/components/ui/pricing-section'
 import { motion, useInView, useScroll, useTransform, useSpring } from 'motion/react'
 import { useRef } from 'react'
 
+// Seeded random number generator for consistent SSR
+function seededRandom(seed: number) {
+  const x = Math.sin(seed) * 10000
+  return x - Math.floor(x)
+}
+
+// Generate deterministic positions for particles
+const PARTICLE_POSITIONS = Array.from({ length: 20 }, (_, i) => ({
+  left: seededRandom(i * 2.5) * 100,
+  top: seededRandom(i * 3.7) * 100,
+  duration: 15 + seededRandom(i * 1.8) * 10,
+  delay: seededRandom(i * 4.3) * 5,
+}))
+
 const LETTER_TYPES = [
   { value: 'demand_letter', label: 'Demand Letter', price: 299 },
   { value: 'cease_desist', label: 'Cease & Desist', price: 299 },
@@ -265,13 +279,13 @@ export default function HomePage() {
             />
 
             {/* Floating particles */}
-            {Array.from({ length: 20 }).map((_, i) => (
+            {PARTICLE_POSITIONS.map((particle, i) => (
               <motion.div
                 key={i}
                 className="absolute w-2 h-2 bg-blue-400/40 rounded-full"
                 style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
+                  left: `${particle.left}%`,
+                  top: `${particle.top}%`,
                 }}
                 animate={{
                   y: [0, -50, 0],
@@ -280,9 +294,9 @@ export default function HomePage() {
                   scale: [1, 1.5, 1],
                 }}
                 transition={{
-                  duration: 15 + Math.random() * 10,
+                  duration: particle.duration,
                   repeat: Infinity,
-                  delay: Math.random() * 5,
+                  delay: particle.delay,
                   ease: "easeInOut"
                 }}
               />
