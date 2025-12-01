@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js"
 import { createClient as createServerClient } from "@/lib/supabase/server"
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { createRateLimit } from "@/lib/rate-limit"
 
 // Rate limiting for profile creation
@@ -10,7 +10,7 @@ const rateLimiter = createRateLimit({
   message: "Too many profile creation attempts. Please try again later.",
 })
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     // Apply rate limiting
     const rateLimitResult = await rateLimiter(request)
