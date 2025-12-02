@@ -13,7 +13,7 @@ draft → generating → pending_review → under_review → approved/rejected �
 
 ### Status Definitions:
 - **`draft`** - Initial state, user hasn't submitted
-- **`generating`** - AI is creating the letter content (Gemini API call in progress)
+- **`generating`** - AI is creating the letter content (OpenAI GPT-4 Turbo via Vercel AI SDK in progress)
 - **`pending_review`** - Letter generated successfully, waiting for admin review
 - **`under_review`** - Admin has started reviewing the letter
 - **`approved`** - Admin approved the letter (legacy, now uses `completed`)
@@ -345,9 +345,9 @@ Lists all super users.
 
 | Plan Type | Letters | Price | Billing |
 |-----------|---------|-------|---------|
-| `one_time` | 1 | $10 | One-time |
-| `monthly_standard` | 4 | $25/mo | Monthly |
-| `monthly_premium` | 12 | $60/mo | Monthly |
+| `one_time` | 1 | $299 | One-time |
+| `monthly_standard` | 4 | $299/mo | Monthly |
+| `monthly_premium` | 8 | $599/yr | Yearly |
 
 ---
 
@@ -390,8 +390,8 @@ NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 
-# AI
-GEMINI_API_KEY=your-gemini-api-key
+# AI - OpenAI GPT-4 Turbo via Vercel AI SDK
+OPENAI_API_KEY=sk-your-openai-api-key
 ```
 
 ---
