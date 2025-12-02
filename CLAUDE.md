@@ -37,7 +37,7 @@ Talk-To-My-Lawyer is a production-ready SaaS platform that generates legal lette
 - **Hosting**: Vercel (recommended)
 - **Database**: Supabase (PostgreSQL with RLS)
 - **Environment**: Node.js 18+
-- **Package Manager**: npm
+- **Package Manager**: pnpm
 
 ## Project Structure
 
@@ -555,7 +555,7 @@ CRON_SECRET=your-random-secret-key
 
 ```bash
 # 1. Install dependencies
-npm install
+pnpm install
 
 # 2. Set up environment variables
 cp .env.example .env.local
@@ -567,7 +567,7 @@ supabase db push scripts/001_setup_schema.sql
 # ... continue with other scripts
 
 # 4. Start development server
-npm run dev
+pnpm dev
 ```
 
 ### Database Setup
@@ -590,15 +590,15 @@ All database migrations are in the `/scripts/` directory and must be run in nume
 
 ```bash
 # Development
-npm run dev              # Start dev server (localhost:3000)
-npm run build            # Build for production
-npm run start            # Start production server
-npm run lint             # Run ESLint
+pnpm dev              # Start dev server (localhost:3000)
+pnpm build            # Build for production
+pnpm start            # Start production server
+pnpm lint             # Run ESLint
 
 # Git shortcuts (use with caution)
-npm run commit           # Stage all + commit with message
-npm run push             # Push to origin main
-npm run save             # Auto-commit with timestamp + push
+pnpm commit           # Stage all + commit with message
+pnpm push             # Push to origin main
+pnpm save             # Auto-commit with timestamp + push
 ```
 
 ## Testing & Quality Assurance
