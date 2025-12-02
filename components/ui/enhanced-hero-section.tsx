@@ -179,7 +179,7 @@ export default function HeroSection({ onGetStarted, onLearnMore }: HeroSectionPr
             Need a Lawyer&apos;s
           </motion.span>
           <motion.span
-            className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-teal-600"
+            className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-600"
             initial={{ opacity: 0, y: 50, filter: 'blur(20px)' }}
             animate={isInView ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
             transition={{ duration: 0.8, delay: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
@@ -231,18 +231,18 @@ export default function HeroSection({ onGetStarted, onLearnMore }: HeroSectionPr
               onClick={onGetStarted}
               className="relative group px-12 py-5 text-lg font-semibold text-white rounded-xl shadow-2xl overflow-hidden transition-all duration-300 hover:shadow-3xl"
               style={{
-                background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
+                background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
               }}
               whileHover={{
-                background: 'linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)',
+                background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
               }}
             >
               {/* Running Border Effect */}
               <div className="absolute inset-0 rounded-xl">
                 <div className="absolute inset-0 rounded-xl p-[3px]">
-                  <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-400 via-purple-400 to-teal-400 opacity-75 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-400 via-blue-500 to-cyan-400 opacity-75 group-hover:opacity-100 transition-opacity duration-300" />
                   <motion.div
-                    className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-400 via-purple-400 to-teal-400 opacity-75"
+                    className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-400 via-blue-500 to-cyan-400 opacity-75"
                     animate={{
                       backgroundPosition: ['0% 50%', '200% 50%'],
                     }}
@@ -256,7 +256,7 @@ export default function HeroSection({ onGetStarted, onLearnMore }: HeroSectionPr
                     }}
                   />
                 </div>
-                <div className="absolute inset-[3px] rounded-xl bg-gradient-to-r from-blue-600 to-purple-600" />
+                <div className="absolute inset-[3px] rounded-xl bg-gradient-to-r from-blue-600 to-blue-700" />
               </div>
 
               {/* Content */}
@@ -307,7 +307,7 @@ export default function HeroSection({ onGetStarted, onLearnMore }: HeroSectionPr
               onClick={onLearnMore}
               className="px-12 py-5 text-lg font-semibold text-blue-600 bg-white border-2 border-blue-200 rounded-xl shadow-lg hover:shadow-xl hover:bg-blue-50 transition-all duration-300 group relative overflow-hidden"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-purple-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-blue-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="relative z-10 flex items-center">
                 View Letter Types
                 <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform duration-300" />
