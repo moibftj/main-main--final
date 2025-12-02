@@ -81,8 +81,8 @@ export default async function AdminDashboard() {
       value: `$${((totalRevenue || 0) * 299).toLocaleString()}`,
       description: "Estimated revenue",
       icon: DollarSign,
-      color: "text-purple-600",
-      bgColor: "bg-purple-50"
+      color: "text-blue-600",
+      bgColor: "bg-blue-50"
     }
   ]
 
