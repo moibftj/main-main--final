@@ -115,7 +115,6 @@ export async function POST(request: NextRequest) {
           user_id: user.id,
           coupon_code: 'TALK3',
           employee_id: null,
-          subscription_id: subscription.id,
           discount_percent: 100,
           amount_before: basePrice,
           amount_after: 0
