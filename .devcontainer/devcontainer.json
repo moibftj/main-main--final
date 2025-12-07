@@ -73,7 +73,7 @@
 	"forwardPorts": [3000],
 
 	// Install dependencies after container is created
-	"postCreateCommand": "sudo chown -R node:node ${containerWorkspaceFolder} && pnpm install",
+	"postCreateCommand": "sudo rm -rf node_modules/.bin 2>/dev/null; pnpm install",
 
 	// VS Code extensions for this project
 	"customizations": {
