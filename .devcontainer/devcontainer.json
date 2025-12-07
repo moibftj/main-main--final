@@ -4,6 +4,40 @@
 	"name": "Talk-To-My-Lawyer Dev",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
 	"image": "mcr.microsoft.com/devcontainers/base:bookworm",
+
+	// Performance: Allocate more memory and CPU
+	"runArgs": [
+		"--memory=4g",
+		"--cpus=2"
+	],
+
+	// Performance: Exclude heavy directories from file watching
+	"settings": {
+		"files.watcherExclude": {
+			"**/node_modules/**": true,
+			"**/.git/objects/**": true,
+			"**/.git/subtree-cache/**": true,
+			"**/.next/**": true,
+			"**/out/**": true,
+			"**/dist/**": true
+		},
+		"search.exclude": {
+			"**/node_modules": true,
+			"**/bower_components": true,
+			"**/*.code-search": true,
+			"**/.git": true,
+			"**/.next": true,
+			"**/out": true,
+			"**/dist": true
+		},
+		"files.exclude": {
+			"**/.git": true,
+			"**/.svn": true,
+			"**/.hg": true,
+			"**/CVS": true
+		}
+	},
+
 	"features": {
 		// Git and GitHub CLI
 		"ghcr.io/devcontainers/features/git:1": {
@@ -39,7 +73,7 @@
 	"forwardPorts": [3000],
 
 	// Install dependencies after container is created
-	"postCreateCommand": "pnpm install",
+	"postCreateCommand": "sudo chown -R node:node ${containerWorkspaceFolder} && pnpm install",
 
 	// VS Code extensions for this project
 	"customizations": {
@@ -48,7 +82,42 @@
 				"dbaeumer.vscode-eslint",
 				"esbenp.prettier-vscode",
 				"bradlc.vscode-tailwindcss"
-			]
+			],
+			// Performance: VS Code specific settings
+			"settings": {
+				// TypeScript performance
+				"typescript.tsserver.experimental.enableProjectDiagnostics": false,
+				"typescript.tsserver.maxTsServerMemory": 3072,
+				"typescript.tsserver.watchOptions": {
+					"watchDirectory": "useFsEvents",
+					"watchFile": "useFsEvents"
+				},
+				// ESLint performance
+				"eslint.run": "onType",
+				"eslint.packageManager": "pnpm",
+				"eslint.validate": [
+					"javascript",
+					"javascriptreact",
+					"typescript",
+					"typescriptreact"
+				],
+				// General performance
+				"editor.semanticTokenColorCustomizations": {
+					"enabled": false
+				},
+				"editor.tokenColorCustomizations": {
+					"enabled": false
+				},
+				"git.enableSmartCommit": true,
+				"git.autofetch": false,
+				"extensions.autoUpdate": false,
+				"workbench.startupEditor": "none",
+				// Tailwind performance
+				"tailwindCSS.includeLanguages": {
+					"typescript": "javascript",
+					"typescriptreact": "javascriptreact"
+				}
+			}
 		}
 	}
 }
