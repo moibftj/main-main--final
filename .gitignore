@@ -69,3 +69,6 @@ vercel-env.json
 .env.production
 node_modules
 .pnpm-store/
+
+# Local environment (never commit)
+.env.local

@@ -11,6 +11,11 @@
 		"--cpus=4"
 	],
 
+	// Persist data across container rebuilds
+	"mounts": [
+		"source=${localWorkspaceFolderBasename}-node_modules,target=${containerWorkspaceFolder}/node_modules,type=volume"
+	],
+
 	// Performance: Exclude heavy directories from file watching
 	"settings": {
 		"files.watcherExclude": {
