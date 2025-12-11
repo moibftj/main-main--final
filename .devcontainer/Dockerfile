@@ -38,15 +38,15 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | d
     && apt-get install -y gh \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Supabase CLI
-RUN curl -fsSL https://github.com/supabase/cli/releases/latest/download/supabase_linux_amd64.deb -o supabase.deb \
-    && dpkg -i supabase.deb \
-    && rm supabase.deb
+# Install Supabase CLI (using npm - more reliable than deb)
+RUN npm install -g supabase@latest
 
 # Install Stripe CLI
-RUN curl -fsSL https://github.com/stripe/stripe-cli/releases/latest/download/stripe_linux_amd64.deb -o stripe.deb \
-    && dpkg -i stripe.deb \
-    && rm stripe.deb
+RUN curl -s https://packages.stripe.dev/api/security/keypair/stripe-cli-gpg/public | gpg --dearmor | tee /usr/share/keyrings/stripe.gpg > /dev/null \
+    && echo "deb [signed-by=/usr/share/keyrings/stripe.gpg] https://packages.stripe.dev/stripe-cli-debian-local stable main" | tee /etc/apt/sources.list.d/stripe.list > /dev/null \
+    && apt-get update \
+    && apt-get install -y stripe \
+    && rm -rf /var/lib/apt/lists/*
 
 # Update npm to latest version
 RUN npm install -g npm@latest
