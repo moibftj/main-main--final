@@ -48,6 +48,9 @@ RUN curl -fsSL https://github.com/stripe/stripe-cli/releases/latest/download/str
     && dpkg -i stripe.deb \
     && rm stripe.deb
 
+# Update npm to latest version
+RUN npm install -g npm@latest
+
 # Install pnpm globally
 RUN npm install -g pnpm@latest
 
